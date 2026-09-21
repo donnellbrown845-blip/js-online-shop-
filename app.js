@@ -1,8 +1,38 @@
-const productName = "RAM"
-const category = "NVME";
-let price = 70.00;
-let inStock = true;
-console.log("productName:", productName)
-console.log("category:", category)
-console.log("price:", price)
-console.log("inStock:", inStock)
+const products = [
+    {
+        productName: "BANANA",
+        category: "FOOD",
+        price: 129.99,
+        inStock: true 
+    },
+    {
+        productName: "EGGS",
+        category: "FOOD",
+        price: 200.99,
+        inStock: false
+    },
+    {
+        productName: "JORDANS",
+        category: "FOOTWEAR",
+        price: 2000.99,
+        inStock: true 
+    },
+    {
+        productName: "ADIDAS",
+        category: "FOOTWEAR",
+        price: 200.99,
+        inStock: true 
+    },
+    {
+        productName: "REEBOK",
+        category: "FOOTWEAR",
+        price: 150.99,
+        inStock: true 
+    },
+                   
+];
+
+const cart = [];
+
+console.log ("Products array:", products)
+
