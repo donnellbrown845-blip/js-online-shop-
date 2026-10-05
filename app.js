@@ -1,77 +1,11 @@
-const products = [
-    {
-        productName: "BANANA",
-        category: "FOOD",
-        price: 129.99,
-        inStock: true 
-    },
-    {
-        productName: "EGGS",
-        category: "FOOD",
-        price: 200.99,
-        inStock: false
-    },
-    {
-        productName: "JORDANS",
-        category: "FOOTWEAR",
-        price: 2000.99,
-        inStock: true 
-    },
-    {
-        productName: "ADIDAS",
-        category: "FOOTWEAR",
-        price: 200.99,
-        inStock: true 
-    },
-    {
-        productName: "REEBOK",
-        category: "FOOTWEAR",
-        price: 150.99,
-        inStock: true 
-    },
-                   
-];
+import { products } from "./products.js";
+import { addToCart, cart } from "./cart.js";
 
-const cart = [];
-
-console.log ("Products array:", products)
-
-function addToCart(productName) {
-    const product = products.find(function (item) {
-        return item.productName === productName;
-    });
-
-    if (!product) {
-        console.log("Not found: \"" + productName + "\" is not in the catalog.");
-        return;
+function showError(message) {
+    const errorEl = document.getElementById("error-message");
+    if (errorEl) {
+        errorEl.textContent = message;
     }
-
-    if (!product.inStock) {
-        console.log("Out of stock: " + product.productName + " cannot be added.");
-        return;
-    }
-
-    cart.push(product);
-        console.log("Added to cart: " + product.productName + " ($" + product.price.toFixed(2) + ")");
-        updateCartCount();
-}
-
-function viewCart() {
-    if (cart.length === 0) {
-        console.log("Your cart is empty.");
-        return;
-    }
-
-    console.log("----- Cart -----");
-    let total = 0;
-
-    for (let i = 0; i < cart.length; i++) {
-        const item = cart[i];
-        console.log(item.productName + " — $" + item.price.toFixed(2));
-        total += item.price;
-    }
-
-    console.log("Total: $" + total.toFixed(2));
 }
 
 function filterByCategory(category) {
@@ -141,8 +75,15 @@ function renderProducts(productList) {
     const button = document.createElement("button");
     button.textContent = "Add to Cart";
 
-    button.addEventListener("click", function () {
-      addToCart(product.productName);
+   button.addEventListener("click", function () {
+    try {
+        addToCart(product.productName);
+        showError("");
+    } catch (error) {
+        showError(error.message);
+    } finally {
+        updateCartCount();
+    }
     });
 
     card.appendChild(nameEl);
