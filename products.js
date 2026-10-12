@@ -1,32 +1,14 @@
-export const products = [
-    {
-        productName: "BANANA",
-        category: "FOOD",
-        price: 129.99,
-        inStock: true
-    },
-    {
-        productName: "EGGS",
-        category: "FOOD",
-        price: 200.99,
-        inStock: false
-    },
-    {
-        productName: "JORDANS",
-        category: "FOOTWEAR",
-        price: 2000.99,
-        inStock: true
-    },
-    {
-        productName: "ADIDAS",
-        category: "FOOTWEAR",
-        price: 200.99,
-        inStock: true
-    },
-    {
-        productName: "REEBOK",
-        category: "FOOTWEAR",
-        price: 150.99,
-        inStock: true
+export async function fetchProducts() {
+    const url = "./products.json";
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Couldn't load products.");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to load products. Please try again later.");
+        return [];
     }
-];
+}

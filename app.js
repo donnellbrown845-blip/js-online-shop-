@@ -1,5 +1,7 @@
-import { products } from "./products.js";
-import { addToCart, cart } from "./cart.js";
+import { fetchProducts } from "./products.js";
+import { addToCart, removeFromCart, cart, viewCart } from "./cart.js";
+
+let products = [];
 
 function showError(message) {
     const errorEl = document.getElementById("error-message");
@@ -77,8 +79,9 @@ function renderProducts(productList) {
 
    button.addEventListener("click", function () {
     try {
-        addToCart(product.productName);
+        addToCart(product);
         showError("");
+        renderCart();
     } catch (error) {
         showError(error.message);
     } finally {
@@ -94,8 +97,63 @@ function renderProducts(productList) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  renderCategoryButtons();
-  renderProducts(products);
-  updateCartCount();
-});
+function renderCart() {
+    const cartContainer = document.getElementById("cart-items");
+    const totalEl = document.getElementById("cart-total");
+    cartContainer.innerHTML = "";
+
+    const cartView = viewCart();
+
+    if (cartView.items.length === 0) {
+        cartContainer.innerHTML = "<p>Your cart is empty.</p>";
+        totalEl.textContent = "Total: $0.00";
+        return;
+    }
+
+    for (let i = 0; i < cartView.items.length; i++) {
+        const item = cartView.items[i];
+
+        const card = document.createElement("article");
+
+        const nameEl = document.createElement("h4");
+        nameEl.textContent = item.productName + " (x" + (item.quantity || 1) + ")";
+
+        const priceEl = document.createElement("p");
+        priceEl.textContent = "$" + item.price.toFixed(2);
+
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "Remove";
+        removeBtn.addEventListener("click", function () {
+            removeFromCart(item.productName);
+            renderCart();
+            updateCartCount();
+        });
+
+        card.appendChild(nameEl);
+        card.appendChild(priceEl);
+        card.appendChild(removeBtn);
+        cartContainer.appendChild(card);
+    }
+
+    totalEl.textContent = "Total: $" + cartView.total.toFixed(2);
+}
+
+async function init() {
+    try {
+        products = await fetchProducts();
+        if (!products || products.length === 0) {
+            showError("No products available.");
+            products = [];
+        }
+    } catch (error) {
+        showError(error.message);
+        products = [];
+    }
+
+    renderCategoryButtons();
+    renderProducts(products);
+    updateCartCount();
+    renderCart();
+}
+
+document.addEventListener("DOMContentLoaded", init); 
